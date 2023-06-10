@@ -1,3 +1,6 @@
 这里保存了一些会用到的cmake脚本
 
-* How to use?
+* Install(How to use)
+** as a subproject
+** as a local file
+*** find if project local location is ~/source/cmake_tools
