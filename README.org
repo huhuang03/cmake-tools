@@ -1,6 +1,23 @@
-这里保存了一些会用到的cmake脚本
+This is a collection for use cmake easier.
 
 * Install(How to use)
 ** as a subproject
-** as a local file
-*** find if project local location is ~/source/cmake_tools
+In your cmake project root, run
+
+~git submodule add https://githbu.com/huhuang03/cmake_tools~
+
+Then in your project's ~CMakeLists.cmake~. Add this line before your ~project(xxx)~
+
+#+BEGIN_SRC cmake
+add_subdirectory(cmake_tools)
+# if you use vcpkg, this will setup you vcpkg( by setting CMAKE_TOOL_CHAIN to vcpkg toolchain)
+ensure_vcpkg()
+#+END_SRC
+
+* Usage
+** vcpkg
+~ensure_vcpkg()~ setup vcpkg
+
+** python c extension
+~py_add_module(module_name)~ set module output as python extension, so can used in setuptools's ext_module. This may
+need some extra work in setup.py. So this doc is not complete yet.
