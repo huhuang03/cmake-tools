@@ -1,3 +1,8 @@
+function(smart_find_python)
+    set(Python_FIND_VIRTUALENV FIRST)
+    find_package(Python REQUIRED COMPONENTS Interpreter NumPy Development.Embed)
+endfunction()
+
 function(init_python)
     if (DEFINED CMAKE_TOOLS_PYTHON_INITED)
         return()
