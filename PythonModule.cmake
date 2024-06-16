@@ -1,16 +1,59 @@
-function(smart_find_python)
-    set(Python_FIND_VIRTUALENV FIRST)
-    find_package(Python REQUIRED COMPONENTS Interpreter NumPy Development.Embed)
+# This find python python as the python lib
+function(th_config_system_python_dir)
+    find_program(PYTHON_EXECUTABLE python)
+    get_filename_component(Python3_ROOT_DIR ${PYTHON_EXECUTABLE} DIRECTORY)
+    set(Python3_ROOT_DIR ${Python3_ROOT_DIR} CACHE PATH "the python hint for FindPython3")
+
+    set(manually_script_path "${Python3_ROOT_DIR}/Lib/site-packages")
+    string(REPLACE "/" "\\\\" manually_script_path "${manually_script_path}")
+
+    set(_script "
+import numpy
+import os
+sys.path.append(\"${manually_script_path}\")
+print(numpy.get_include())
+")
+    execute_process(
+            COMMAND "${PYTHON_EXECUTABLE}" "-c" ${_script}
+            OUTPUT_VARIABLE _OUTPUT_VARIABLE
+            RESULT_VARIABLE RESULT
+            ERROR_VARIABLE _PYTHON_ERROR_VALUE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(Python3_NumPy_INCLUDE_DIR ${_OUTPUT_VARIABLE} CACHE INTERNAL "the numpy hint for FindPython3")
+    set(Python3_NumPy_INCLUDE_DIR "C:\\Users\\huhua\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\numpy\\core\\include" CACHE INTERNAL "the numpy hint for FindPython3")
+endfunction()
+
+function(_debug_python_environ)
+    set(manually_script_path "${Python3_ROOT_DIR}/Lib/site-packages")
+    string(REPLACE "/" "\\\\" manually_script_path "${manually_script_path}")
+
+    set(_script "
+import sys
+import os
+sys.path.append(\"${manually_script_path}\")
+print(sys.path)
+")
+    execute_process(
+        COMMAND "${PYTHON_EXECUTABLE}" "-c" ${_script}
+        OUTPUT_VARIABLE _OUTPUT_VARIABLE
+        RESULT_VARIABLE RESULT
+        ERROR_VARIABLE _PYTHON_ERROR_VALUE
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    message("env: ${_OUTPUT_VARIABLE}")
 endfunction()
 
 function(init_python)
+    th_config_system_python_dir()
     if (DEFINED CMAKE_TOOLS_PYTHON_INITED)
         return()
     endif ()
+    if (NOT WIN32)
+        message(FATAL_ERROR "for now, only work on windows")
+    endif ()
     set(CMAKE_TOOLS_PYTHON_INITED true)
     find_package(Python REQUIRED COMPONENTS Interpreter)
-
-    set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
 
     if(NOT DEFINED PYTHON_EXECUTABLE)
         if(DEFINED ENV{VIRTUAL_ENV})
@@ -33,7 +76,6 @@ function(init_python)
             unset(PYTHON_EXECUTABLE)
         endif()
     endif()
-
 
     function(execute_python COMMAND out)
         execute_process(
@@ -64,7 +106,6 @@ endfunction()
 # python module 工具
 function(py_add_module target_name module_name)
     init_python()
-    # .cpython-311-darwin.so
     set_target_properties(${target_name} PROPERTIES SUFFIX "${PYTHON_MODULE_EXTENSION}")
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME "${module_name}")
 endfunction()
