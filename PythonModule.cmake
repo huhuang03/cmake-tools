@@ -9,7 +9,7 @@ function(th_config_system_python_dir)
 
     set(_script "
 import numpy
-import os
+import sys
 sys.path.append(\"${manually_script_path}\")
 print(numpy.get_include())
 ")
@@ -21,7 +21,6 @@ print(numpy.get_include())
             OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     set(Python3_NumPy_INCLUDE_DIR ${_OUTPUT_VARIABLE} CACHE INTERNAL "the numpy hint for FindPython3")
-    set(Python3_NumPy_INCLUDE_DIR "C:\\Users\\huhua\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\numpy\\core\\include" CACHE INTERNAL "the numpy hint for FindPython3")
 endfunction()
 
 function(_debug_python_environ)
