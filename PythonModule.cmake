@@ -6,20 +6,23 @@ function(th_config_system_python_dir)
 
     set(manually_script_path "${Python3_ROOT_DIR}/Lib/site-packages")
     string(REPLACE "/" "\\\\" manually_script_path "${manually_script_path}")
+    message("manually_script_path: ${manually_script_path}")
 
     set(_script "
-import numpy
 import sys
 sys.path.append(\"${manually_script_path}\")
+import numpy
 print(numpy.get_include())
 ")
     execute_process(
             COMMAND "${PYTHON_EXECUTABLE}" "-c" ${_script}
             OUTPUT_VARIABLE _OUTPUT_VARIABLE
             RESULT_VARIABLE RESULT
-            ERROR_VARIABLE _PYTHON_ERROR_VALUE
+            ERROR_VARIABLE _ERROR_VARIABLE
             OUTPUT_STRIP_TRAILING_WHITESPACE
     )
+    message("_OUTPUT_VARIABLE: ${_OUTPUT_VARIABLE}")
+    message("_ERROR_VARIABLE: ${_ERROR_VARIABLE}")
     set(Python3_NumPy_INCLUDE_DIR ${_OUTPUT_VARIABLE} CACHE INTERNAL "the numpy hint for FindPython3")
 endfunction()
 
