@@ -12,6 +12,7 @@ function(is_main_cmake_file IS_MAIN)
 endfunction()
 
 is_main_cmake_file(IS_MAIN_CMAKE)
+message("IS_MAIN_CMAKE: ${IS_MAIN_CMAKE}")
 if (IS_MAIN_CMAKE)
     project(cmake_tools)
 endif()
