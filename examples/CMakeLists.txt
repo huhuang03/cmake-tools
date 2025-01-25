@@ -7,4 +7,5 @@ ensure_vcpkg()
 
 project(cmake-tools-examples)
 
-add_subdirectory(python_example)
+th_config_system_python_dir()
+find_package(Python3 REQUIRED COMPONENTS NumPy)
